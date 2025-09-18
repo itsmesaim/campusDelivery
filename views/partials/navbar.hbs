@@ -1,0 +1,50 @@
+<nav class="navbar">
+    <div class="nav-container">
+        <div class="nav-brand">
+            <div class="nav-logo">🎓</div>
+            <span class="nav-title">Campus Delivery</span>
+        </div>
+
+        <div class="nav-menu">
+            <div class="nav-links">
+                {{#if (eq user.role 'student')}}
+                <a href="/dashboard/student" class="nav-link">Home</a>
+                <a href="/orders/mine" class="nav-link">My Orders</a>
+                <a href="/profile" class="nav-link">Profile</a>
+                {{/if}}
+
+                {{#if (eq user.role 'vendor')}}
+                <a href="/dashboard/vendor" class="nav-link">Dashboard</a>
+                <a href="/vendor/menu" class="nav-link">Menu</a>
+                <a href="/vendor/orders" class="nav-link">Orders</a>
+                <a href="/vendor/analytics" class="nav-link">Analytics</a>
+                {{/if}}
+
+                {{#if (eq user.role 'admin')}}
+                <a href="/dashboard/admin" class="nav-link">Dashboard</a>
+                <a href="/admin/users" class="nav-link">Users</a>
+                <a href="/admin/vendors" class="nav-link">Vendors</a>
+                <a href="/admin/orders" class="nav-link">Orders</a>
+                <a href="/admin/reports" class="nav-link">Reports</a>
+                {{/if}}
+            </div>
+
+            <div class="nav-user">
+                <div class="user-info">
+                    <span class="user-name">{{user.name}}</span>
+                    <span class="user-role">{{user.role}}</span>
+                </div>
+                <form action="/auth/logout" method="POST" class="logout-form">
+                    <button type="submit" class="btn-logout">Logout</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Toggle -->
+        <div class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+</nav>

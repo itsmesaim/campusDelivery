@@ -1,0 +1,696 @@
+<div class="vendor-orders-page">
+    <div class="page-header">
+        <h1>Order Management</h1>
+        <p>Manage and track all your orders</p>
+        <a href="/dashboard/vendor" class="back-btn">← Back to Dashboard</a>
+    </div>
+
+    <!-- Order Stats -->
+    <div class="order-stats">
+        <div class="stat-item">
+            <div class="stat-number">{{orders.length}}</div>
+            <div class="stat-label">Total Orders</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">{{pendingCount}}</div>
+            <div class="stat-label">Pending</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">{{completedCount}}</div>
+            <div class="stat-label">Completed</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">₹{{totalRevenue}}</div>
+            <div class="stat-label">Total Revenue</div>
+        </div>
+    </div>
+
+    <!-- Filter Tabs -->
+    <div class="filter-tabs">
+        <button class="filter-tab active" data-status="all">All Orders</button>
+        <button class="filter-tab" data-status="PLACED">New ({{newCount}})</button>
+        <button class="filter-tab" data-status="CONFIRMED">Confirmed</button>
+        <button class="filter-tab" data-status="PREPARING">Preparing</button>
+        <button class="filter-tab" data-status="READY">Ready</button>
+        <button class="filter-tab" data-status="DELIVERED">Delivered</button>
+        <button class="filter-tab" data-status="CANCELLED">Cancelled</button>
+    </div>
+
+    {{#if orders.length}}
+    <div class="orders-container">
+        {{#each orders}}
+        <div class="order-card" data-status="{{this.status}}">
+            <div class="order-header">
+                <div class="order-info">
+                    <h3>Order #{{this.orderNumber}}</h3>
+                    <p class="customer-info">
+                        👤 {{this.userId.name}} | 📞 {{this.phone}}
+                    </p>
+                    <p class="order-time">🕐 {{formatDate this.createdAt}}</p>
+                </div>
+                <div class="order-amount">
+                    <div class="total">₹{{this.total}}</div>
+                    <span class="status-badge status-{{this.status}}">{{this.status}}</span>
+                </div>
+            </div>
+
+            <div class="order-items">
+                <h4>Items:</h4>
+                <div class="items-list">
+                    {{#each this.items}}
+                    <div class="item-row">
+                        <span class="item-name">{{this.name}} × {{this.quantity}}</span>
+                        <span class="item-price">₹{{this.total}}</span>
+                    </div>
+                    {{/each}}
+                </div>
+            </div>
+
+            <div class="order-details">
+                <div class="detail-row">
+                    <strong>Delivery Address:</strong> {{this.deliveryAddress}}
+                </div>
+                <div class="detail-row">
+                    <strong>Payment Method:</strong> {{this.paymentMethod}}
+                </div>
+                {{#if this.notes}}
+                <div class="detail-row">
+                    <strong>Special Instructions:</strong> {{this.notes}}
+                </div>
+                {{/if}}
+            </div>
+
+            {{#if (eq this.status 'PLACED')}}
+            <div class="order-actions">
+                <button class="accept-btn" onclick="acceptOrder('{{this._id}}')">
+                    ✅ Accept Order
+                </button>
+                <button class="reject-btn" onclick="rejectOrder('{{this._id}}')">
+                    ❌ Reject Order
+                </button>
+            </div>
+            {{/if}}
+
+            {{#if (eq this.status 'CONFIRMED')}}
+            <div class="order-actions">
+                <button class="status-btn" onclick="updateOrderStatus('{{this._id}}', 'PREPARING')">
+                    🍳 Start Preparing
+                </button>
+            </div>
+            {{/if}}
+
+            {{#if (eq this.status 'PREPARING')}}
+            <div class="order-actions">
+                <button class="status-btn" onclick="updateOrderStatus('{{this._id}}', 'READY')">
+                    📦 Mark Ready
+                </button>
+            </div>
+            {{/if}}
+
+            {{#if (eq this.status 'READY')}}
+            <div class="order-actions">
+                <button class="status-btn" onclick="updateOrderStatus('{{this._id}}', 'DELIVERED')">
+                    🚚 Mark Delivered
+                </button>
+                <button class="contact-btn" onclick="contactCustomer('{{this.phone}}')">
+                    📞 Call Customer
+                </button>
+            </div>
+            {{/if}}
+
+            {{#if (eq this.status 'DELIVERED')}}
+            <div class="order-completed">
+                <span class="completed-text">✅ Order Completed</span>
+                {{#if this.deliveredAt}}
+                <span class="delivery-time">Delivered: {{formatDate this.deliveredAt}}</span>
+                {{/if}}
+            </div>
+            {{/if}}
+
+            {{#if (eq this.status 'CANCELLED')}}
+            <div class="order-cancelled">
+                <span class="cancelled-text">❌ Order Cancelled</span>
+                {{#if this.cancellationReason}}
+                <span class="cancel-reason">Reason: {{this.cancellationReason}}</span>
+                {{/if}}
+            </div>
+            {{/if}}
+        </div>
+        {{/each}}
+    </div>
+    {{else}}
+    <div class="empty-orders">
+        <div class="empty-icon">📦</div>
+        <h3>No orders yet</h3>
+        <p>Orders will appear here when customers place them</p>
+        <a href="/dashboard/vendor" class="dashboard-btn">Go to Dashboard</a>
+    </div>
+    {{/if}}
+</div>
+
+<style>
+    .vendor-orders-page {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .page-header {
+        background: white;
+        padding: 24px;
+        border-radius: 16px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+        margin-bottom: 24px;
+        text-align: center;
+    }
+
+    .page-header h1 {
+        font-size: 28px;
+        font-weight: 700;
+        color: #1a202c;
+        margin-bottom: 8px;
+    }
+
+    .page-header p {
+        color: #4a5568;
+        margin-bottom: 16px;
+    }
+
+    .back-btn {
+        display: inline-block;
+        background: #667eea;
+        color: white;
+        padding: 8px 16px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .back-btn:hover {
+        background: #5a67d8;
+        transform: translateY(-1px);
+    }
+
+    .order-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    .stat-item {
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        text-align: center;
+    }
+
+    .stat-number {
+        font-size: 24px;
+        font-weight: 700;
+        color: #667eea;
+        margin-bottom: 4px;
+    }
+
+    .stat-label {
+        color: #4a5568;
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+    .filter-tabs {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 24px;
+        overflow-x: auto;
+        padding-bottom: 8px;
+    }
+
+    .filter-tab {
+        background: white;
+        border: 2px solid #e2e8f0;
+        padding: 10px 16px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-weight: 500;
+        white-space: nowrap;
+        transition: all 0.3s ease;
+        font-size: 14px;
+    }
+
+    .filter-tab:hover,
+    .filter-tab.active {
+        background: #667eea;
+        color: white;
+        border-color: #667eea;
+    }
+
+    .orders-container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .order-card {
+        background: white;
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+        border-left: 4px solid #e2e8f0;
+        transition: all 0.3s ease;
+    }
+
+    .order-card[data-status="PLACED"] {
+        border-left-color: #f59e0b;
+        animation: pulse-glow 2s infinite;
+    }
+
+    .order-card[data-status="CONFIRMED"] {
+        border-left-color: #3b82f6;
+    }
+
+    .order-card[data-status="PREPARING"] {
+        border-left-color: #f59e0b;
+    }
+
+    .order-card[data-status="READY"] {
+        border-left-color: #10b981;
+    }
+
+    .order-card[data-status="DELIVERED"] {
+        border-left-color: #059669;
+    }
+
+    .order-card[data-status="CANCELLED"] {
+        border-left-color: #ef4444;
+        opacity: 0.7;
+    }
+
+    @keyframes pulse-glow {
+
+        0%,
+        100% {
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        50% {
+            box-shadow: 0 2px 12px rgba(245, 158, 11, 0.2);
+        }
+    }
+
+    .order-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 16px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .order-info h3 {
+        font-size: 18px;
+        font-weight: 700;
+        color: #1a202c;
+        margin-bottom: 4px;
+    }
+
+    .customer-info {
+        color: #4a5568;
+        font-size: 14px;
+        margin-bottom: 4px;
+    }
+
+    .order-time {
+        color: #718096;
+        font-size: 12px;
+    }
+
+    .order-amount {
+        text-align: right;
+    }
+
+    .total {
+        font-size: 20px;
+        font-weight: 700;
+        color: #1a202c;
+        margin-bottom: 4px;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .status-PLACED {
+        background: #fef3c7;
+        color: #d97706;
+    }
+
+    .status-CONFIRMED {
+        background: #dbeafe;
+        color: #2563eb;
+    }
+
+    .status-PREPARING {
+        background: #fed7d7;
+        color: #dc2626;
+    }
+
+    .status-READY {
+        background: #d1fae5;
+        color: #059669;
+    }
+
+    .status-DELIVERED {
+        background: #c6f6d5;
+        color: #16a34a;
+    }
+
+    .status-CANCELLED {
+        background: #f3f4f6;
+        color: #6b7280;
+    }
+
+    .order-items {
+        margin-bottom: 16px;
+    }
+
+    .order-items h4 {
+        font-size: 14px;
+        font-weight: 600;
+        color: #4a5568;
+        margin-bottom: 8px;
+    }
+
+    .items-list {
+        background: #f7fafc;
+        padding: 12px;
+        border-radius: 8px;
+    }
+
+    .item-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 4px 0;
+        font-size: 14px;
+    }
+
+    .item-name {
+        color: #1a202c;
+    }
+
+    .item-price {
+        color: #667eea;
+        font-weight: 600;
+    }
+
+    .order-details {
+        margin-bottom: 16px;
+        font-size: 14px;
+    }
+
+    .detail-row {
+        margin-bottom: 4px;
+        color: #4a5568;
+    }
+
+    .order-actions {
+        display: flex;
+        gap: 12px;
+    }
+
+    .accept-btn,
+    .reject-btn,
+    .status-btn,
+    .contact-btn {
+        padding: 10px 16px;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 14px;
+    }
+
+    .accept-btn {
+        background: #10b981;
+        color: white;
+        flex: 1;
+    }
+
+    .accept-btn:hover {
+        background: #059669;
+    }
+
+    .reject-btn {
+        background: #ef4444;
+        color: white;
+        flex: 1;
+    }
+
+    .reject-btn:hover {
+        background: #dc2626;
+    }
+
+    .status-btn {
+        background: #667eea;
+        color: white;
+        flex: 1;
+    }
+
+    .status-btn:hover {
+        background: #5a67d8;
+    }
+
+    .contact-btn {
+        background: #f59e0b;
+        color: white;
+    }
+
+    .contact-btn:hover {
+        background: #d97706;
+    }
+
+    .order-completed,
+    .order-cancelled {
+        text-align: center;
+        padding: 12px;
+        border-radius: 8px;
+    }
+
+    .order-completed {
+        background: #f0fff4;
+        border: 1px solid #c6f6d5;
+    }
+
+    .order-cancelled {
+        background: #fef2f2;
+        border: 1px solid #fecaca;
+    }
+
+    .completed-text {
+        color: #059669;
+        font-weight: 600;
+        display: block;
+        margin-bottom: 4px;
+    }
+
+    .cancelled-text {
+        color: #dc2626;
+        font-weight: 600;
+        display: block;
+        margin-bottom: 4px;
+    }
+
+    .delivery-time,
+    .cancel-reason {
+        color: #4a5568;
+        font-size: 12px;
+    }
+
+    .empty-orders {
+        text-align: center;
+        background: white;
+        padding: 60px 40px;
+        border-radius: 16px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .empty-icon {
+        font-size: 64px;
+        margin-bottom: 16px;
+    }
+
+    .empty-orders h3 {
+        font-size: 24px;
+        font-weight: 700;
+        color: #1a202c;
+        margin-bottom: 8px;
+    }
+
+    .empty-orders p {
+        color: #4a5568;
+        margin-bottom: 24px;
+    }
+
+    .dashboard-btn {
+        background: #667eea;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .dashboard-btn:hover {
+        background: #5a67d8;
+        transform: translateY(-2px);
+    }
+
+    @media (max-width: 768px) {
+        .vendor-orders-page {
+            padding: 12px;
+        }
+
+        .order-header {
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .order-amount {
+            text-align: left;
+        }
+
+        .order-actions {
+            flex-direction: column;
+        }
+
+        .filter-tabs {
+            overflow-x: scroll;
+        }
+    }
+</style>
+
+<script>
+    // Filter orders by status
+    document.querySelectorAll('.filter-tab').forEach(tab => {
+        tab.addEventListener('click', function () {
+            document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+
+            const status = this.dataset.status;
+            const orderCards = document.querySelectorAll('.order-card');
+
+            orderCards.forEach(card => {
+                if (status === 'all' || card.dataset.status === status) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    });
+
+    function acceptOrder(orderId) {
+        if (confirm('Accept this order?')) {
+            updateOrderStatus(orderId, 'CONFIRMED');
+        }
+    }
+
+    function rejectOrder(orderId) {
+        const reason = prompt('Reason for rejection (optional):');
+        if (reason !== null) {
+            fetch(`/vendor/orders/${orderId}/reject`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ reason })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showNotification('Order rejected', 'success');
+                        setTimeout(() => window.location.reload(), 1000);
+                    } else {
+                        showNotification(data.message, 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showNotification('Failed to reject order', 'error');
+                });
+        }
+    }
+
+    function updateOrderStatus(orderId, status) {
+        fetch(`/vendor/orders/${orderId}/status`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ status })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showNotification(`Order marked as ${status.toLowerCase()}`, 'success');
+                    setTimeout(() => window.location.reload(), 1000);
+                } else {
+                    showNotification(data.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('Failed to update order status', 'error');
+            });
+    }
+
+    function contactCustomer(phone) {
+        if (confirm(`Call customer at ${phone}?`)) {
+            window.open(`tel:${phone}`);
+        }
+    }
+
+    function showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = 'notification';
+
+        const colors = {
+            success: '#10b981',
+            error: '#ef4444',
+            warning: '#f59e0b',
+            info: '#3b82f6'
+        };
+
+        notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${colors[type]};
+        color: white;
+        padding: 16px 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        z-index: 9999;
+        font-weight: 500;
+        max-width: 350px;
+        animation: slideInRight 0.3s ease;
+    `;
+
+        notification.textContent = message;
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+            notification.style.animation = 'fadeOut 0.3s ease';
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
+    }
+</script>

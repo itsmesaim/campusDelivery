@@ -1,0 +1,107 @@
+<div class="admin-container">
+    <div class="page-header">
+        <h1>Manage Orders</h1>
+        <a href="/dashboard/admin" class="btn-secondary">← Back to Dashboard</a>
+    </div>
+
+    {{#if orders}}
+    <div class="orders-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Order #</th>
+                    <th>Customer</th>
+                    <th>Vendor</th>
+                    <th>Items</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each orders}}
+                <tr>
+                    <td><strong>{{this.orderNumber}}</strong></td>
+                    <td>{{this.userId.name}}</td>
+                    <td>{{this.vendorId.name}}</td>
+                    <td>{{this.items.length}} items</td>
+                    <td>₹{{this.total}}</td>
+                    <td><span class="status-badge {{this.status}}">{{this.status}}</span></td>
+                    <td>{{formatDate this.createdAt}}</td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+    {{else}}
+    <div class="empty-state">
+        <h3>No orders found</h3>
+        <p>Orders will appear here when customers start ordering</p>
+    </div>
+    {{/if}}
+</div>
+
+<style>
+    .orders-table {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .orders-table table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .orders-table th,
+    .orders-table td {
+        padding: 12px 16px;
+        text-align: left;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .orders-table th {
+        background: #f8f9fa;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .status-badge {
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 500;
+        text-transform: uppercase;
+    }
+
+    .status-badge.PLACED {
+        background: #fff2cc;
+        color: #d69e2e;
+    }
+
+    .status-badge.CONFIRMED {
+        background: #e6fffa;
+        color: #38a169;
+    }
+
+    .status-badge.PREPARING {
+        background: #feebc8;
+        color: #d69e2e;
+    }
+
+    .status-badge.READY {
+        background: #e6fffa;
+        color: #38a169;
+    }
+
+    .status-badge.DELIVERED {
+        background: #c6f6d5;
+        color: #38a169;
+    }
+
+    .status-badge.CANCELLED {
+        background: #fed7d7;
+        color: #e53e3e;
+    }
+</style>

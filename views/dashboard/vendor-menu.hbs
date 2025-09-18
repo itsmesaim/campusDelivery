@@ -1,0 +1,824 @@
+<div class="vendor-menu-page">
+    <div class="page-header">
+        <h1>Menu Management</h1>
+        <p>Add, edit, and manage your menu items</p>
+        <div class="header-actions">
+            <a href="/dashboard/vendor" class="back-btn">← Back to Dashboard</a>
+            <button class="add-item-btn" onclick="showAddItemModal()">+ Add New Item</button>
+        </div>
+    </div>
+
+    {{#if messages.success}}
+    <div class="alert alert-success">{{messages.success}}</div>
+    {{/if}}
+
+    {{#if messages.error}}
+    <div class="alert alert-error">{{messages.error}}</div>
+    {{/if}}
+
+    <!-- Menu Categories -->
+    <div class="category-tabs">
+        <button class="category-tab active" data-category="all">All Items ({{menuItems.length}})</button>
+        <button class="category-tab" data-category="available">Available</button>
+        <button class="category-tab" data-category="unavailable">Unavailable</button>
+    </div>
+
+    {{#if menuItems.length}}
+    <div class="menu-grid">
+        {{#each menuItems}}
+        <div class="menu-item-card" data-available="{{this.isAvailable}}">
+            <div class="item-header">
+                <div class="item-status">
+                    {{#if this.isAvailable}}
+                    <span class="status-badge available">Available</span>
+                    {{else}}
+                    <span class="status-badge unavailable">Unavailable</span>
+                    {{/if}}
+                </div>
+                <div class="item-actions">
+                    <button class="action-btn edit" onclick="editItem('{{this._id}}')" title="Edit">✏️</button>
+                    <button class="action-btn toggle" onclick="toggleItemStatus('{{this._id}}')" title="Toggle Status">
+                        {{#if this.isAvailable}}❌{{else}}✅{{/if}}
+                    </button>
+                    <button class="action-btn delete" onclick="deleteItem('{{this._id}}')" title="Delete">🗑️</button>
+                </div>
+            </div>
+
+            <div class="item-content">
+                <h3>{{this.name}}</h3>
+                <p class="item-description">{{this.description}}</p>
+                <div class="item-details">
+                    <div class="price">₹{{this.price}}</div>
+                    <div class="category">{{this.category}}</div>
+                    {{#if this.isVeg}}
+                    <span class="veg-indicator">🟢 Veg</span>
+                    {{else}}
+                    <span class="nonveg-indicator">🔴 Non-Veg</span>
+                    {{/if}}
+                </div>
+                <div class="item-meta">
+                    <span class="prep-time">⏱️ {{this.preparationTime}}</span>
+                    <span class="rating">⭐ {{this.rating}}</span>
+                </div>
+            </div>
+        </div>
+        {{/each}}
+    </div>
+    {{else}}
+    <div class="empty-menu">
+        <div class="empty-icon">🍽️</div>
+        <h3>No menu items yet</h3>
+        <p>Start building your menu by adding your first item</p>
+        <button class="add-first-item-btn" onclick="showAddItemModal()">Add Your First Item</button>
+    </div>
+    {{/if}}
+</div>
+
+<!-- Add/Edit Item Modal -->
+<div id="itemModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="modalTitle">Add New Item</h3>
+            <button onclick="closeItemModal()" class="close-modal">×</button>
+        </div>
+
+        <form id="itemForm" action="/vendor/menu/add" method="POST">
+            <input type="hidden" id="itemId" name="itemId">
+
+            <div class="form-group">
+                <label for="itemName">Item Name *</label>
+                <input type="text" id="itemName" name="name" required placeholder="e.g., Margherita Pizza">
+            </div>
+
+            <div class="form-group">
+                <label for="itemDescription">Description *</label>
+                <textarea id="itemDescription" name="description" required placeholder="Describe your dish..."
+                    rows="3"></textarea>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="itemPrice">Price (₹) *</label>
+                    <input type="number" id="itemPrice" name="price" required min="1" placeholder="299">
+                </div>
+                <div class="form-group">
+                    <label for="itemCategory">Category *</label>
+                    <select id="itemCategory" name="category" required>
+                        <option value="">Select Category</option>
+                        <option value="Pizza">Pizza</option>
+                        <option value="Coffee">Coffee & Beverages</option>
+                        <option value="Sandwiches">Sandwiches</option>
+                        <option value="Indian">Indian</option>
+                        <option value="Chinese">Chinese</option>
+                        <option value="Fast Food">Fast Food</option>
+                        <option value="Desserts">Desserts</option>
+                        <option value="Healthy">Healthy</option>
+                        <option value="Stationary">Stationary</option>
+                        <option value="Main Course">Main Course</option>
+                        <option value="Breakfast">Breakfast</option>
+                        <option value="Beverages">Beverages</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="prepTime">Preparation Time</label>
+                    <input type="text" id="prepTime" name="preparationTime" placeholder="10-15 min">
+                </div>
+                <div class="form-group">
+                    <label>Food Type</label>
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="isVeg" value="true" checked>
+                            <span>🟢 Vegetarian</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="isVeg" value="false">
+                            <span>🔴 Non-Vegetarian</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="isAvailable" name="isAvailable" checked>
+                    <span>Available for orders</span>
+                </label>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="cancel-btn" onclick="closeItemModal()">Cancel</button>
+                <button type="submit" class="save-btn" id="saveBtn">Add Item</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .vendor-menu-page {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .page-header {
+        background: white;
+        padding: 24px;
+        border-radius: 16px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+        margin-bottom: 24px;
+    }
+
+    .page-header h1 {
+        font-size: 28px;
+        font-weight: 700;
+        color: #1a202c;
+        margin-bottom: 8px;
+    }
+
+    .page-header p {
+        color: #4a5568;
+        margin-bottom: 16px;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .back-btn,
+    .add-item-btn {
+        padding: 10px 16px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+    }
+
+    .back-btn {
+        background: #667eea;
+        color: white;
+    }
+
+    .back-btn:hover {
+        background: #5a67d8;
+    }
+
+    .add-item-btn {
+        background: #10b981;
+        color: white;
+    }
+
+    .add-item-btn:hover {
+        background: #059669;
+    }
+
+    .alert {
+        padding: 12px 16px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        font-size: 14px;
+    }
+
+    .alert-success {
+        background: #f0fff4;
+        color: #38a169;
+        border: 1px solid #c6f6d5;
+    }
+
+    .alert-error {
+        background: #fee;
+        color: #c53030;
+        border: 1px solid #fed7d7;
+    }
+
+    .category-tabs {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 24px;
+        overflow-x: auto;
+    }
+
+    .category-tab {
+        background: white;
+        border: 2px solid #e2e8f0;
+        padding: 10px 16px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-weight: 500;
+        white-space: nowrap;
+        transition: all 0.3s ease;
+        font-size: 14px;
+    }
+
+    .category-tab:hover,
+    .category-tab.active {
+        background: #667eea;
+        color: white;
+        border-color: #667eea;
+    }
+
+    .menu-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+    }
+
+    .menu-item-card {
+        background: white;
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+        transition: transform 0.2s ease;
+    }
+
+    .menu-item-card:hover {
+        transform: translateY(-2px);
+    }
+
+    .menu-item-card[data-available="false"] {
+        opacity: 0.6;
+        border: 2px dashed #e2e8f0;
+    }
+
+    .item-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+    }
+
+    .status-badge {
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .status-badge.available {
+        background: #c6f6d5;
+        color: #22543d;
+    }
+
+    .status-badge.unavailable {
+        background: #fed7d7;
+        color: #742a2a;
+    }
+
+    .item-actions {
+        display: flex;
+        gap: 8px;
+    }
+
+    .action-btn {
+        width: 32px;
+        height: 32px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        font-size: 14px;
+    }
+
+    .action-btn.edit {
+        background: #dbeafe;
+        color: #2563eb;
+    }
+
+    .action-btn.edit:hover {
+        background: #3b82f6;
+        color: white;
+    }
+
+    .action-btn.toggle {
+        background: #fef3c7;
+        color: #d97706;
+    }
+
+    .action-btn.toggle:hover {
+        background: #f59e0b;
+        color: white;
+    }
+
+    .action-btn.delete {
+        background: #fee2e2;
+        color: #dc2626;
+    }
+
+    .action-btn.delete:hover {
+        background: #ef4444;
+        color: white;
+    }
+
+    .item-content h3 {
+        font-size: 18px;
+        font-weight: 700;
+        color: #1a202c;
+        margin-bottom: 8px;
+    }
+
+    .item-description {
+        color: #4a5568;
+        font-size: 14px;
+        margin-bottom: 12px;
+        line-height: 1.4;
+    }
+
+    .item-details {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 8px;
+        flex-wrap: wrap;
+    }
+
+    .price {
+        font-size: 18px;
+        font-weight: 700;
+        color: #667eea;
+    }
+
+    .category {
+        background: #f7fafc;
+        padding: 2px 8px;
+        border-radius: 8px;
+        font-size: 12px;
+        color: #4a5568;
+        font-weight: 500;
+    }
+
+    .veg-indicator,
+    .nonveg-indicator {
+        font-size: 12px;
+        font-weight: 500;
+    }
+
+    .item-meta {
+        display: flex;
+        gap: 12px;
+        font-size: 12px;
+        color: #718096;
+    }
+
+    .empty-menu {
+        text-align: center;
+        background: white;
+        padding: 60px 40px;
+        border-radius: 16px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .empty-icon {
+        font-size: 64px;
+        margin-bottom: 16px;
+    }
+
+    .empty-menu h3 {
+        font-size: 24px;
+        font-weight: 700;
+        color: #1a202c;
+        margin-bottom: 8px;
+    }
+
+    .empty-menu p {
+        color: #4a5568;
+        margin-bottom: 24px;
+    }
+
+    .add-first-item-btn {
+        background: #10b981;
+        color: white;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .add-first-item-btn:hover {
+        background: #059669;
+        transform: translateY(-2px);
+    }
+
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        z-index: 2000;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .modal-content {
+        background: white;
+        border-radius: 20px;
+        max-width: 600px;
+        width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
+        animation: modalSlideIn 0.3s ease;
+    }
+
+    @keyframes modalSlideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-50px) scale(0.9);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 24px 24px 0 24px;
+        margin-bottom: 20px;
+    }
+
+    .modal-header h3 {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 700;
+        color: #1a202c;
+    }
+
+    .close-modal {
+        background: none;
+        border: none;
+        font-size: 28px;
+        cursor: pointer;
+        color: #718096;
+        padding: 4px;
+        border-radius: 4px;
+        transition: all 0.2s ease;
+    }
+
+    .close-modal:hover {
+        background: #f7fafc;
+        color: #4a5568;
+    }
+
+    #itemForm {
+        padding: 0 24px 24px 24px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: 600;
+        color: #4a5568;
+        font-size: 14px;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        width: 100%;
+        padding: 12px 16px;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        font-size: 16px;
+        transition: all 0.3s ease;
+        box-sizing: border-box;
+        font-family: inherit;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .radio-group {
+        display: flex;
+        gap: 16px;
+    }
+
+    .radio-label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .radio-label input[type="radio"] {
+        width: auto;
+        margin: 0;
+    }
+
+    .checkbox-label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .checkbox-label input[type="checkbox"] {
+        width: auto;
+        margin: 0;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 24px;
+        padding-top: 20px;
+        border-top: 1px solid #e2e8f0;
+    }
+
+    .cancel-btn,
+    .save-btn {
+        flex: 1;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .cancel-btn {
+        background: #e2e8f0;
+        color: #4a5568;
+    }
+
+    .cancel-btn:hover {
+        background: #cbd5e0;
+    }
+
+    .save-btn {
+        background: #10b981;
+        color: white;
+    }
+
+    .save-btn:hover {
+        background: #059669;
+    }
+
+    @media (max-width: 768px) {
+        .vendor-menu-page {
+            padding: 12px;
+        }
+
+        .header-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .menu-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+
+        .radio-group {
+            flex-direction: column;
+            gap: 8px;
+        }
+    }
+</style>
+
+<script>
+    let editingItemId = null;
+
+    // Category filtering
+    document.querySelectorAll('.category-tab').forEach(tab => {
+        tab.addEventListener('click', function () {
+            document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+
+            const category = this.dataset.category;
+            const menuCards = document.querySelectorAll('.menu-item-card');
+
+            menuCards.forEach(card => {
+                if (category === 'all') {
+                    card.style.display = 'block';
+                } else if (category === 'available') {
+                    card.style.display = card.dataset.available === 'true' ? 'block' : 'none';
+                } else if (category === 'unavailable') {
+                    card.style.display = card.dataset.available === 'false' ? 'block' : 'none';
+                }
+            });
+        });
+    });
+
+    function showAddItemModal() {
+        editingItemId = null;
+        document.getElementById('modalTitle').textContent = 'Add New Item';
+        document.getElementById('itemForm').action = '/vendor/menu/add';
+        document.getElementById('saveBtn').textContent = 'Add Item';
+        document.getElementById('itemForm').reset();
+        document.getElementById('itemModal').style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeItemModal() {
+        document.getElementById('itemModal').style.display = 'none';
+        document.body.style.overflow = 'auto';
+        editingItemId = null;
+    }
+
+    function editItem(itemId) {
+        editingItemId = itemId;
+        document.getElementById('modalTitle').textContent = 'Edit Item';
+        document.getElementById('itemForm').action = '/vendor/menu/edit';
+        document.getElementById('saveBtn').textContent = 'Update Item';
+        document.getElementById('itemId').value = itemId;
+
+        // In a real app, you'd fetch the item data and populate the form
+        // For now, just show the modal
+        document.getElementById('itemModal').style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function toggleItemStatus(itemId) {
+        if (confirm('Toggle item availability?')) {
+            fetch(`/vendor/menu/${itemId}/toggle`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showNotification(data.message, 'success');
+                        setTimeout(() => window.location.reload(), 1000);
+                    } else {
+                        showNotification(data.message, 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showNotification('Failed to update item status', 'error');
+                });
+        }
+    }
+
+    function deleteItem(itemId) {
+        if (confirm('Are you sure you want to delete this item? This action cannot be undone.')) {
+            fetch(`/vendor/menu/${itemId}/delete`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showNotification('Item deleted successfully', 'success');
+                        setTimeout(() => window.location.reload(), 1000);
+                    } else {
+                        showNotification(data.message, 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showNotification('Failed to delete item', 'error');
+                });
+        }
+    }
+
+    function showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = 'notification';
+
+        const colors = {
+            success: '#10b981',
+            error: '#ef4444',
+            warning: '#f59e0b',
+            info: '#3b82f6'
+        };
+
+        notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${colors[type]};
+        color: white;
+        padding: 16px 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        z-index: 9999;
+        font-weight: 500;
+        max-width: 350px;
+        animation: slideInRight 0.3s ease;
+    `;
+
+        notification.textContent = message;
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+            notification.style.animation = 'fadeOut 0.3s ease';
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
+    }
+
+    // Close modal when clicking outside
+    document.getElementById('itemModal').addEventListener('click', function (e) {
+        if (e.target === this) {
+            closeItemModal();
+        }
+    });
+
+    // Form submission
+    document.getElementById('itemForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+        const action = this.action;
+
+        fetch(action, {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showNotification(data.message, 'success');
+                    closeItemModal();
+                    setTimeout(() => window.location.reload(), 1000);
+                } else {
+                    showNotification(data.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('Failed to save item', 'error');
+            });
+    });
+</script>

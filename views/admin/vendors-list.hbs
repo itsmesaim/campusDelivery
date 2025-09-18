@@ -1,0 +1,235 @@
+<div class="admin-container">
+    <div class="page-header">
+        <h1>Manage Vendors</h1>
+        <a href="/admin/vendors/new" class="btn-primary">+ Add New Vendor</a>
+    </div>
+
+    {{#if vendors}}
+    <div class="vendors-grid">
+        {{#each vendors}}
+        <div class="vendor-card">
+            <div class="vendor-header">
+                <div class="vendor-info">
+                    <h3>{{this.name}}</h3>
+                    <p class="vendor-cuisine">{{this.cuisine}}</p>
+                    <p class="vendor-description">{{this.description}}</p>
+                </div>
+                <div class="vendor-status">
+                    {{#if this.isActive}}
+                    <span class="status active">Active</span>
+                    {{else}}
+                    <span class="status inactive">Inactive</span>
+                    {{/if}}
+                    {{#if this.isOnline}}
+                    <span class="status online">Online</span>
+                    {{else}}
+                    <span class="status offline">Offline</span>
+                    {{/if}}
+                </div>
+            </div>
+
+            <div class="vendor-details">
+                <div class="detail-item">
+                    <strong>Rating:</strong> ⭐ {{this.rating}}
+                </div>
+                <div class="detail-item">
+                    <strong>Delivery Time:</strong> {{this.deliveryTime}}
+                </div>
+                <div class="detail-item">
+                    <strong>Created:</strong> {{formatDate this.createdAt}}
+                </div>
+            </div>
+
+            <div class="vendor-actions">
+                <form action="/admin/vendors/{{this._id}}/toggle" method="POST" style="display: inline;">
+                    {{#if this.isActive}}
+                    <button type="submit" class="btn-danger">Deactivate</button>
+                    {{else}}
+                    <button type="submit" class="btn-success">Activate</button>
+                    {{/if}}
+                </form>
+                <a href="/vendor/menu?vendorId={{this._id}}" class="btn-secondary">View Menu</a>
+            </div>
+        </div>
+        {{/each}}
+    </div>
+    {{else}}
+    <div class="empty-state">
+        <div class="empty-icon">🏪</div>
+        <h3>No vendors yet</h3>
+        <p>Create your first vendor to get started</p>
+        <a href="/admin/vendors/new" class="btn-primary">Create First Vendor</a>
+    </div>
+    {{/if}}
+</div>
+
+<style>
+    .admin-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #e1e5e9;
+    }
+
+    .vendors-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 20px;
+    }
+
+    .vendor-card {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        border: 1px solid #f0f0f0;
+    }
+
+    .vendor-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 15px;
+    }
+
+    .vendor-info h3 {
+        margin: 0 0 5px 0;
+        color: #333;
+        font-size: 18px;
+    }
+
+    .vendor-cuisine {
+        color: #6C5CE7;
+        font-weight: 500;
+        margin: 0 0 8px 0;
+        font-size: 14px;
+    }
+
+    .vendor-description {
+        color: #666;
+        font-size: 14px;
+        margin: 0;
+    }
+
+    .vendor-status {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .status {
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 500;
+        text-align: center;
+        min-width: 60px;
+    }
+
+    .status.active {
+        background: #c6f6d5;
+        color: #38a169;
+    }
+
+    .status.inactive {
+        background: #fed7d7;
+        color: #e53e3e;
+    }
+
+    .status.online {
+        background: #bee3f8;
+        color: #3182ce;
+    }
+
+    .status.offline {
+        background: #f7fafc;
+        color: #718096;
+    }
+
+    .vendor-details {
+        margin-bottom: 15px;
+        padding-top: 15px;
+        border-top: 1px solid #f0f0f0;
+    }
+
+    .detail-item {
+        margin-bottom: 5px;
+        font-size: 14px;
+        color: #333;
+    }
+
+    .vendor-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .btn-danger {
+        background: #e53e3e;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 12px;
+    }
+
+    .btn-success {
+        background: #38a169;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 12px;
+    }
+
+    .btn-secondary {
+        background: transparent;
+        color: #6C5CE7;
+        border: 1px solid #6C5CE7;
+        padding: 8px 16px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 12px;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+    }
+
+    .empty-icon {
+        font-size: 48px;
+        margin-bottom: 20px;
+    }
+
+    .empty-state h3 {
+        margin: 0 0 10px 0;
+        color: #333;
+    }
+
+    .empty-state p {
+        color: #666;
+        margin: 0 0 20px 0;
+    }
+
+    @media (max-width: 768px) {
+        .vendors-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .page-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 15px;
+        }
+    }
+</style>

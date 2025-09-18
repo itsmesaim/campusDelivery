@@ -1,0 +1,163 @@
+/* Authentication Page Styles for Handlebars */
+.auth-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #6C5CE7 0%, #00D2D3 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.auth-card {
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(108, 92, 231, 0.3);
+    max-width: 450px;
+    width: 100%;
+}
+
+/* Logo Section */
+.logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.logo-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #6C5CE7, #00D2D3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    font-size: 24px;
+    color: white;
+}
+
+.logo-text h2 {
+    margin: 0;
+    color: #6C5CE7;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.logo-text p {
+    margin: 4px 0 0 0;
+    color: #666;
+    font-size: 14px;
+}
+
+/* Page Titles */
+.auth-card h1 {
+    text-align: center;
+    margin-bottom: 8px;
+    color: #333;
+    font-size: 28px;
+    font-weight: 600;
+}
+
+.subtitle {
+    text-align: center;
+    color: #666;
+    margin-bottom: 30px;
+    font-size: 16px;
+}
+
+/* Form Styles */
+.auth-form {
+    margin-bottom: 20px;
+}
+
+.auth-card .input-group {
+    margin-bottom: 20px;
+}
+
+.auth-card .input-group label {
+    font-weight: 500;
+    color: #444;
+    margin-bottom: 8px;
+}
+
+.auth-card .input-group input {
+    padding: 14px 16px;
+    border: 2px solid #e1e5e9;
+    border-radius: 10px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    background: #fafafa;
+}
+
+.auth-card .input-group input:focus {
+    background: white;
+    border-color: #6C5CE7;
+    box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1);
+}
+
+/* Two-column layout for signup */
+.form-row {
+    display: flex;
+    gap: 15px;
+}
+
+.form-row .input-group {
+    flex: 1;
+}
+
+/* Submit Button */
+.auth-card .btn-primary {
+    padding: 14px 24px;
+    font-size: 16px;
+    font-weight: 600;
+    margin-top: 10px;
+    border-radius: 10px;
+    width: 100%;
+}
+
+/* Footer Links */
+.auth-footer {
+    text-align: center;
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.auth-footer p {
+    color: #666;
+    font-size: 14px;
+}
+
+.auth-footer a {
+    color: #6C5CE7;
+    font-weight: 600;
+}
+
+/* Mobile Responsive */
+@media (max-width: 480px) {
+    .auth-card {
+        padding: 30px 20px;
+        margin: 10px;
+    }
+
+    .logo {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .logo-icon {
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .auth-card h1 {
+        font-size: 24px;
+    }
+}

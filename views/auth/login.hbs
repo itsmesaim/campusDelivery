@@ -1,0 +1,489 @@
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h1>Welcome Back</h1>
+            <p>Sign in to your Campus Delivery account</p>
+        </div>
+
+        {{#if messages.error}}
+        <div class="alert alert-error">
+            {{messages.error}}
+        </div>
+        {{/if}}
+
+        {{#if messages.success}}
+        <div class="alert alert-success">
+            {{messages.success}}
+        </div>
+        {{/if}}
+
+        <form action="/auth/login" method="POST" class="auth-form" id="loginForm">
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" required placeholder="Enter your email" value="{{email}}">
+                <span class="error-message" id="emailError"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <div class="password-input">
+                    <input type="password" id="password" name="password" required placeholder="Enter your password">
+                    <button type="button" class="password-toggle" id="togglePassword">
+                        <span id="eyeIcon">👁️</span>
+                    </button>
+                </div>
+                <span class="error-message" id="passwordError"></span>
+            </div>
+
+            <div class="form-options">
+                <label class="checkbox-container">
+                    <input type="checkbox" id="remember" name="remember">
+                    <span class="checkmark"></span>
+                    Remember me
+                </label>
+                <a href="/auth/forgot-password" class="forgot-link">Forgot password?</a>
+            </div>
+
+            <button type="submit" class="auth-button" id="submitBtn">
+                <span id="buttonText">Sign In</span>
+                <span id="buttonLoader" class="loader" style="display: none;"></span>
+            </button>
+        </form>
+
+        <div class="divider">
+            <span>or</span>
+        </div>
+
+        <div class="demo-accounts">
+            <h4>Quick Demo Access</h4>
+            <div class="demo-buttons">
+                <button type="button" class="demo-btn student-demo" onclick="fillDemoCredentials('student')">
+                    🎓 Login as Student
+                </button>
+                <button type="button" class="demo-btn vendor-demo" onclick="fillDemoCredentials('vendor')">
+                    🍕 Login as Vendor
+                </button>
+            </div>
+        </div>
+
+        <div class="auth-footer">
+            <p>Don't have an account? <a href="/auth/signup">Create one here</a></p>
+        </div>
+    </div>
+</div>
+
+<style>
+    .auth-container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 20px;
+    }
+
+    .auth-card {
+        background: white;
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 450px;
+        position: relative;
+    }
+
+    .auth-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .auth-header h1 {
+        font-size: 32px;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 8px;
+    }
+
+    .auth-header p {
+        color: #666;
+        font-size: 16px;
+    }
+
+    .alert {
+        padding: 12px 16px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        font-size: 14px;
+    }
+
+    .alert-error {
+        background: #fee;
+        color: #c53030;
+        border: 1px solid #fed7d7;
+    }
+
+    .alert-success {
+        background: #f0fff4;
+        color: #38a169;
+        border: 1px solid #c6f6d5;
+    }
+
+    .auth-form {
+        space-y: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #333;
+        font-size: 14px;
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 14px 16px;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        font-size: 16px;
+        transition: all 0.3s ease;
+        box-sizing: border-box;
+        font-family: inherit;
+    }
+
+    .form-group input:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        transform: translateY(-1px);
+    }
+
+    .password-input {
+        position: relative;
+    }
+
+    .password-input input {
+        padding-right: 50px;
+    }
+
+    .password-toggle {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 4px;
+        font-size: 16px;
+    }
+
+    .error-message {
+        display: block;
+        color: #e53e3e;
+        font-size: 12px;
+        margin-top: 4px;
+        min-height: 16px;
+    }
+
+    .form-options {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+    }
+
+    .checkbox-container {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .checkbox-container input[type="checkbox"] {
+        width: auto;
+        margin: 0;
+    }
+
+    .forgot-link {
+        color: #667eea;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+    .forgot-link:hover {
+        text-decoration: underline;
+    }
+
+    .auth-button {
+        width: 100%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 16px;
+        border-radius: 12px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin-bottom: 24px;
+    }
+
+    .auth-button:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+    }
+
+    .auth-button:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .loader {
+        width: 20px;
+        height: 20px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top-color: white;
+        animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    .divider {
+        text-align: center;
+        margin: 24px 0;
+        position: relative;
+    }
+
+    .divider::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: #e2e8f0;
+    }
+
+    .divider span {
+        background: white;
+        padding: 0 16px;
+        color: #666;
+        font-size: 14px;
+    }
+
+    .demo-accounts {
+        text-align: center;
+        margin-bottom: 24px;
+    }
+
+    .demo-accounts h4 {
+        color: #333;
+        margin-bottom: 16px;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .demo-buttons {
+        display: flex;
+        gap: 12px;
+        flex-direction: column;
+    }
+
+    .demo-btn {
+        padding: 12px 16px;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        background: white;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .demo-btn:hover {
+        border-color: #667eea;
+        background: #f7fafc;
+        transform: translateY(-1px);
+    }
+
+    .student-demo:hover {
+        border-color: #38a169;
+        color: #38a169;
+    }
+
+    .vendor-demo:hover {
+        border-color: #d69e2e;
+        color: #d69e2e;
+    }
+
+    .auth-footer {
+        text-align: center;
+        padding-top: 20px;
+        border-top: 1px solid #e2e8f0;
+    }
+
+    .auth-footer p {
+        color: #666;
+        font-size: 14px;
+    }
+
+    .auth-footer a {
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .auth-footer a:hover {
+        text-decoration: underline;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .auth-container {
+            padding: 10px;
+        }
+
+        .auth-card {
+            padding: 30px 20px;
+        }
+
+        .auth-header h1 {
+            font-size: 28px;
+        }
+
+        .form-options {
+            flex-direction: column;
+            gap: 12px;
+            align-items: flex-start;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('loginForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const buttonText = document.getElementById('buttonText');
+        const buttonLoader = document.getElementById('buttonLoader');
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+        const eyeIcon = document.getElementById('eyeIcon');
+
+        // Password toggle functionality
+        togglePassword.addEventListener('click', function () {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            eyeIcon.textContent = type === 'password' ? '👁️' : '🙈';
+        });
+
+        // Form validation
+        function validateField(field, errorId, validationFn, errorMessage) {
+            const errorElement = document.getElementById(errorId);
+            const isValid = validationFn(field.value);
+
+            if (!isValid && field.value) {
+                errorElement.textContent = errorMessage;
+                field.style.borderColor = '#e53e3e';
+                return false;
+            } else {
+                errorElement.textContent = '';
+                field.style.borderColor = field.value ? '#38a169' : '#e2e8f0';
+                return true;
+            }
+        }
+
+        // Validation functions
+        const validations = {
+            email: {
+                fn: (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
+                message: 'Please enter a valid email address'
+            },
+            password: {
+                fn: (value) => value.length >= 6,
+                message: 'Password must be at least 6 characters'
+            }
+        };
+
+        // Add event listeners for real-time validation
+        Object.keys(validations).forEach(fieldName => {
+            const field = document.getElementById(fieldName);
+            if (field) {
+                field.addEventListener('blur', function () {
+                    validateField(field, fieldName + 'Error', validations[fieldName].fn, validations[fieldName].message);
+                });
+
+                field.addEventListener('input', function () {
+                    if (field.style.borderColor === 'rgb(229, 62, 62)') {
+                        validateField(field, fieldName + 'Error', validations[fieldName].fn, validations[fieldName].message);
+                    }
+                });
+            }
+        });
+
+        // Form submission
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            // Validate all fields
+            let isValid = true;
+            Object.keys(validations).forEach(fieldName => {
+                const field = document.getElementById(fieldName);
+                if (field && !validateField(field, fieldName + 'Error', validations[fieldName].fn, validations[fieldName].message)) {
+                    isValid = false;
+                }
+            });
+
+            if (isValid) {
+                // Show loading state
+                submitBtn.disabled = true;
+                buttonText.style.display = 'none';
+                buttonLoader.style.display = 'block';
+
+                // Submit form
+                this.submit();
+            }
+        });
+
+        // Demo credentials functionality
+        window.fillDemoCredentials = function (role) {
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+
+            if (role === 'student') {
+                emailInput.value = 'student@demo.com';
+                passwordInput.value = 'password123';
+            } else if (role === 'vendor') {
+                emailInput.value = 'vendor@demo.com';
+                passwordInput.value = 'password123';
+            }
+
+            // Trigger validation
+            emailInput.dispatchEvent(new Event('blur'));
+            passwordInput.dispatchEvent(new Event('blur'));
+        };
+
+        // Auto-focus email field
+        document.getElementById('email').focus();
+    });
+</script>

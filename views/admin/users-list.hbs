@@ -1,0 +1,137 @@
+<div class="admin-container">
+    <div class="page-header">
+        <h1>Manage Users</h1>
+        <a href="/dashboard/admin" class="btn-secondary">← Back to Dashboard</a>
+    </div>
+
+    {{#if users}}
+    <div class="users-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Mobile</th>
+                    <th>Address</th>
+                    <th>Status</th>
+                    <th>Joined</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each users}}
+                <tr>
+                    <td>{{this.name}}</td>
+                    <td>{{this.email}}</td>
+                    <td><span class="role-badge {{this.role}}">{{this.role}}</span></td>
+                    <td>{{this.mobile}}</td>
+                    <td>{{this.address}}</td>
+                    <td>
+                        {{#if this.isActive}}
+                        <span class="status active">Active</span>
+                        {{else}}
+                        <span class="status inactive">Inactive</span>
+                        {{/if}}
+                    </td>
+                    <td>{{formatDate this.createdAt}}</td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+    {{else}}
+    <div class="empty-state">
+        <h3>No users found</h3>
+        <p>Users will appear here as they register</p>
+    </div>
+    {{/if}}
+</div>
+
+<style>
+    .admin-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #e1e5e9;
+    }
+
+    .users-table {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .users-table table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .users-table th,
+    .users-table td {
+        padding: 12px 16px;
+        text-align: left;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .users-table th {
+        background: #f8f9fa;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .role-badge {
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 500;
+        text-transform: capitalize;
+    }
+
+    .role-badge.student {
+        background: #e6fffa;
+        color: #38a169;
+    }
+
+    .role-badge.vendor {
+        background: #feebc8;
+        color: #d69e2e;
+    }
+
+    .role-badge.admin {
+        background: #fed7d7;
+        color: #e53e3e;
+    }
+
+    .status {
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 500;
+    }
+
+    .status.active {
+        background: #c6f6d5;
+        color: #38a169;
+    }
+
+    .status.inactive {
+        background: #fed7d7;
+        color: #e53e3e;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        background: white;
+        border-radius: 12px;
+    }
+</style>

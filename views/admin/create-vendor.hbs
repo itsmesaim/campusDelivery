@@ -1,0 +1,223 @@
+<div class="admin-container">
+    <div class="page-header">
+        <h1>Create New Vendor</h1>
+        <a href="/admin/vendors" class="btn-secondary">Back to Vendors</a>
+    </div>
+
+    <div class="form-container">
+        <form action="/admin/vendors/create" method="POST" class="vendor-form">
+            <div class="form-section">
+                <h3>Vendor Owner Information</h3>
+
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="ownerName">Owner Name</label>
+                        <input type="text" id="ownerName" name="ownerName" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="ownerEmail">Owner Email</label>
+                        <input type="email" id="ownerEmail" name="ownerEmail" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="ownerPassword">Password</label>
+                        <input type="password" id="ownerPassword" name="ownerPassword" minlength="6" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="ownerMobile">Mobile Number</label>
+                        <input type="tel" id="ownerMobile" name="ownerMobile" pattern="[0-9]{10}" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>Vendor Information</h3>
+
+                <div class="input-group">
+                    <label for="vendorName">Vendor Name</label>
+                    <input type="text" id="vendorName" name="vendorName" placeholder="e.g., Campus Pizza" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" name="description" placeholder="Describe what this vendor offers..."
+                        required></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="cuisine">Cuisine Type</label>
+                        <select id="cuisine" name="cuisine" required>
+                            <option value="">Select Cuisine Type</option>
+                            <option value="Pizza">Pizza</option>
+                            <option value="Coffee">Coffee</option>
+                            <option value="Sandwiches">Sandwiches</option>
+                            <option value="Indian">Indian</option>
+                            <option value="Chinese">Chinese</option>
+                            <option value="Fast Food">Fast Food</option>
+                            <option value="Desserts">Desserts</option>
+                            <option value="Healthy">Healthy</option>
+                            <option value="Stationary">Stationary</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="deliveryTime">Delivery Time</label>
+                        <input type="text" id="deliveryTime" name="deliveryTime" placeholder="e.g., 15-25 min"
+                            value="15-25 min">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-primary">Create Vendor</button>
+                <a href="/admin/vendors" class="btn-cancel">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .admin-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #e1e5e9;
+    }
+
+    .page-header h1 {
+        margin: 0;
+        color: #333;
+    }
+
+    .form-container {
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .form-section {
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .form-section:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+    }
+
+    .form-section h3 {
+        margin: 0 0 20px 0;
+        color: #333;
+        font-size: 18px;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    .input-group {
+        margin-bottom: 20px;
+    }
+
+    .input-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+        color: #333;
+    }
+
+    .input-group input,
+    .input-group select,
+    .input-group textarea {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #e1e5e9;
+        border-radius: 8px;
+        font-size: 16px;
+        transition: border-color 0.3s ease;
+    }
+
+    .input-group input:focus,
+    .input-group select:focus,
+    .input-group textarea:focus {
+        outline: none;
+        border-color: #6C5CE7;
+        box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1);
+    }
+
+    .input-group textarea {
+        height: 100px;
+        resize: vertical;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 15px;
+        justify-content: flex-end;
+        margin-top: 30px;
+    }
+
+    .btn-primary,
+    .btn-secondary,
+    .btn-cancel {
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-weight: 500;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .btn-primary {
+        background: #6C5CE7;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: #5A4FCF;
+    }
+
+    .btn-secondary,
+    .btn-cancel {
+        background: transparent;
+        color: #666;
+        border: 2px solid #e1e5e9;
+    }
+
+    .btn-secondary:hover,
+    .btn-cancel:hover {
+        border-color: #6C5CE7;
+        color: #6C5CE7;
+    }
+
+    @media (max-width: 768px) {
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+
+        .page-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .form-actions {
+            flex-direction: column;
+        }
+    }
+</style>

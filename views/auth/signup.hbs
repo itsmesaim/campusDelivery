@@ -1,0 +1,427 @@
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h1>Join Campus Delivery</h1>
+            <p>Create your account to start ordering</p>
+        </div>
+
+        {{#if messages.error}}
+        <div class="alert alert-error">
+            {{messages.error}}
+        </div>
+        {{/if}}
+
+        {{#if messages.success}}
+        <div class="alert alert-success">
+            {{messages.success}}
+        </div>
+        {{/if}}
+
+        <form action="/auth/signup" method="POST" class="auth-form" id="signupForm">
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" name="name" required placeholder="Enter your full name">
+                <span class="error-message" id="nameError"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" required placeholder="Enter your email">
+                <span class="error-message" id="emailError"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="mobile">Mobile Number</label>
+                <input type="tel" id="mobile" name="mobile" required placeholder="Enter 10-digit mobile number"
+                    pattern="[0-9]{10}">
+                <span class="error-message" id="mobileError"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="address">Delivery Address</label>
+                <textarea id="address" name="address" required
+                    placeholder="Enter your complete address (Hostel/Room/Area)" rows="3"></textarea>
+                <span class="error-message" id="addressError"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required placeholder="Create a strong password"
+                    minlength="6">
+                <span class="error-message" id="passwordError"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" required
+                    placeholder="Confirm your password">
+                <span class="error-message" id="confirmPasswordError"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="role">I am a:</label>
+                <select id="role" name="role" required>
+                    <option value="">Select your role</option>
+                    <option value="student">Student</option>
+                    <option value="vendor">Restaurant/Shop Owner</option>
+                </select>
+                <span class="error-message" id="roleError"></span>
+            </div>
+
+            <div class="form-group">
+                <label class="checkbox-container">
+                    <input type="checkbox" id="terms" required>
+                    <span class="checkmark"></span>
+                    I agree to the <a href="/terms" target="_blank">Terms of Service</a> and <a href="/privacy"
+                        target="_blank">Privacy Policy</a>
+                </label>
+                <span class="error-message" id="termsError"></span>
+            </div>
+
+            <button type="submit" class="auth-button" id="submitBtn">
+                <span id="buttonText">Create Account</span>
+                <span id="buttonLoader" class="loader" style="display: none;"></span>
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            <p>Already have an account? <a href="/login">Sign in here</a></p>
+        </div>
+    </div>
+</div>
+
+<style>
+    .auth-container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 20px;
+    }
+
+    .auth-card {
+        background: white;
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 500px;
+        position: relative;
+    }
+
+    .auth-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .auth-header h1 {
+        font-size: 32px;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 8px;
+    }
+
+    .auth-header p {
+        color: #666;
+        font-size: 16px;
+    }
+
+    .alert {
+        padding: 12px 16px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        font-size: 14px;
+    }
+
+    .alert-error {
+        background: #fee;
+        color: #c53030;
+        border: 1px solid #fed7d7;
+    }
+
+    .alert-success {
+        background: #f0fff4;
+        color: #38a169;
+        border: 1px solid #c6f6d5;
+    }
+
+    .auth-form {
+        space-y: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #333;
+        font-size: 14px;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        width: 100%;
+        padding: 14px 16px;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        font-size: 16px;
+        transition: all 0.3s ease;
+        box-sizing: border-box;
+        font-family: inherit;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        transform: translateY(-1px);
+    }
+
+    .form-group textarea {
+        resize: vertical;
+        min-height: 80px;
+    }
+
+    .error-message {
+        display: block;
+        color: #e53e3e;
+        font-size: 12px;
+        margin-top: 4px;
+        min-height: 16px;
+    }
+
+    .checkbox-container {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        cursor: pointer;
+        font-size: 14px;
+        line-height: 1.4;
+    }
+
+    .checkbox-container input[type="checkbox"] {
+        width: auto;
+        margin: 0;
+    }
+
+    .checkbox-container a {
+        color: #667eea;
+        text-decoration: none;
+    }
+
+    .checkbox-container a:hover {
+        text-decoration: underline;
+    }
+
+    .auth-button {
+        width: 100%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 16px;
+        border-radius: 12px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 8px;
+    }
+
+    .auth-button:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+    }
+
+    .auth-button:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .loader {
+        width: 20px;
+        height: 20px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top-color: white;
+        animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    .auth-footer {
+        text-align: center;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #e2e8f0;
+    }
+
+    .auth-footer p {
+        color: #666;
+        font-size: 14px;
+    }
+
+    .auth-footer a {
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .auth-footer a:hover {
+        text-decoration: underline;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .auth-container {
+            padding: 10px;
+        }
+
+        .auth-card {
+            padding: 30px 20px;
+        }
+
+        .auth-header h1 {
+            font-size: 28px;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('signupForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const buttonText = document.getElementById('buttonText');
+        const buttonLoader = document.getElementById('buttonLoader');
+
+        // Form validation
+        function validateField(field, errorId, validationFn, errorMessage) {
+            const errorElement = document.getElementById(errorId);
+            const isValid = validationFn(field.value);
+
+            if (!isValid && field.value) {
+                errorElement.textContent = errorMessage;
+                field.style.borderColor = '#e53e3e';
+                return false;
+            } else {
+                errorElement.textContent = '';
+                field.style.borderColor = field.value ? '#38a169' : '#e2e8f0';
+                return true;
+            }
+        }
+
+        // Validation functions
+        const validations = {
+            name: {
+                fn: (value) => value.length >= 2,
+                message: 'Name must be at least 2 characters'
+            },
+            email: {
+                fn: (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
+                message: 'Please enter a valid email address'
+            },
+            mobile: {
+                fn: (value) => /^[0-9]{10}$/.test(value),
+                message: 'Please enter a valid 10-digit mobile number'
+            },
+            address: {
+                fn: (value) => value.length >= 10,
+                message: 'Please enter a complete address'
+            },
+            password: {
+                fn: (value) => value.length >= 6,
+                message: 'Password must be at least 6 characters'
+            },
+            confirmPassword: {
+                fn: (value) => value === document.getElementById('password').value,
+                message: 'Passwords do not match'
+            }
+        };
+
+        // Add event listeners for real-time validation
+        Object.keys(validations).forEach(fieldName => {
+            const field = document.getElementById(fieldName);
+            if (field) {
+                field.addEventListener('blur', function () {
+                    validateField(field, fieldName + 'Error', validations[fieldName].fn, validations[fieldName].message);
+                });
+
+                field.addEventListener('input', function () {
+                    if (field.style.borderColor === 'rgb(229, 62, 62)') {
+                        validateField(field, fieldName + 'Error', validations[fieldName].fn, validations[fieldName].message);
+                    }
+                });
+            }
+        });
+
+        // Form submission
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            // Validate all fields
+            let isValid = true;
+            Object.keys(validations).forEach(fieldName => {
+                const field = document.getElementById(fieldName);
+                if (field && !validateField(field, fieldName + 'Error', validations[fieldName].fn, validations[fieldName].message)) {
+                    isValid = false;
+                }
+            });
+
+            // Check terms checkbox
+            const termsCheckbox = document.getElementById('terms');
+            const termsError = document.getElementById('termsError');
+            if (!termsCheckbox.checked) {
+                termsError.textContent = 'Please accept the terms and conditions';
+                isValid = false;
+            } else {
+                termsError.textContent = '';
+            }
+
+            // Check role selection
+            const roleSelect = document.getElementById('role');
+            const roleError = document.getElementById('roleError');
+            if (!roleSelect.value) {
+                roleError.textContent = 'Please select your role';
+                isValid = false;
+            } else {
+                roleError.textContent = '';
+            }
+
+            if (isValid) {
+                // Show loading state
+                submitBtn.disabled = true;
+                buttonText.style.display = 'none';
+                buttonLoader.style.display = 'block';
+
+                // Submit form
+                this.submit();
+            } else {
+                // Scroll to first error
+                const firstError = document.querySelector('.error-message:not(:empty)');
+                if (firstError) {
+                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+        });
+
+        // Auto-format mobile number
+        document.getElementById('mobile').addEventListener('input', function (e) {
+            this.value = this.value.replace(/\D/g, '').slice(0, 10);
+        });
+    });
+</script>

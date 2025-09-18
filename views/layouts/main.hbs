@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}}</title>
+    <link rel="stylesheet" href="/css/main.css">
+    {{#if authPage}}
+    <link rel="stylesheet" href="/css/auth.css">
+    {{/if}}
+    {{#if dashboardPage}}
+    <link rel="stylesheet" href="/css/dashboard.css">
+    {{#if (eq user.role 'student')}}
+    <link rel="stylesheet" href="/css/student.css">
+    {{/if}}
+    {{/if}}
+</head>
+
+<body>
+    {{#if user}}
+    {{> navbar}}
+    {{/if}}
+
+    {{#if messages.error}}
+    <div class="flash-messages">
+        {{#each messages.error}}
+        <div class="alert alert-error">{{this}}</div>
+        {{/each}}
+    </div>
+    {{/if}}
+
+    {{#if messages.success}}
+    <div class="flash-messages">
+        {{#each messages.success}}
+        <div class="alert alert-success">{{this}}</div>
+        {{/each}}
+    </div>
+    {{/if}}
+
+    <main>
+        {{{body}}}
+    </main>
+
+    <script src="/js/main.js"></script>
+    {{#if authPage}}
+    <script src="/js/auth.js"></script>
+    {{/if}}
+    {{#if dashboardPage}}
+    <script src="/js/dashboard.js"></script>
+    {{/if}}
+</body>
+
+</html>

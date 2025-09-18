@@ -1,0 +1,159 @@
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h1>Admin Dashboard</h1>
+        <p class="dashboard-subtitle">Platform overview and management</p>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon">👥</div>
+            <div class="stat-content">
+                <h3>{{stats.totalUsers}}</h3>
+                <p>Total Users</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">🏪</div>
+            <div class="stat-content">
+                <h3>{{stats.activeVendors}}</h3>
+                <p>Active Vendors</p>
+                <small class="stat-detail">{{stats.onlineVendors}} online, {{stats.offlineVendors}} offline</small>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">📦</div>
+            <div class="stat-content">
+                <h3>{{stats.todaysOrders}}</h3>
+                <p>Orders Today</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">💰</div>
+            <div class="stat-content">
+                <h3>₹{{formatCurrency stats.todaysGMV}}</h3>
+                <p>Today's GMV</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-content">
+        <div class="content-section">
+            <h2>Quick Actions</h2>
+            <div class="action-cards">
+                <a href="/admin/users" class="action-card">
+                    <div class="action-icon">👥</div>
+                    <h3>Manage Users</h3>
+                    <p>View and manage user accounts</p>
+                </a>
+                <a href="/admin/vendors" class="action-card">
+                    <div class="action-icon">🏪</div>
+                    <h3>Manage Vendors</h3>
+                    <p>Approve and manage vendors</p>
+                </a>
+                <a href="/admin/vendors/new" class="action-card">
+                    <div class="action-icon">➕</div>
+                    <h3>Add New Vendor</h3>
+                    <p>Create new vendor account</p>
+                </a>
+                <a href="/admin/orders" class="action-card">
+                    <div class="action-icon">📋</div>
+                    <h3>View Orders</h3>
+                    <p>Monitor all platform orders</p>
+                </a>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2>Recent Activity</h2>
+            <div class="activity-list">
+                {{#if activities}}
+                {{#each activities}}
+                <div class="activity-item">
+                    <div class="activity-icon">{{this.icon}}</div>
+                    <div class="activity-content">
+                        <h4>{{this.title}}</h4>
+                        <p>{{this.description}}</p>
+                        <span class="activity-time">{{formatDate this.time}}</span>
+                    </div>
+                    {{#if this.amount}}
+                    <div class="activity-amount">₹{{this.amount}}</div>
+                    {{/if}}
+                </div>
+                {{/each}}
+                {{else}}
+                <div class="no-activity">
+                    <p>No recent activity to display</p>
+                </div>
+                {{/if}}
+            </div>
+        </div>
+    </div>
+
+    {{#if (eq stats.totalUsers 0)}}
+    <div class="welcome-message">
+        <div class="welcome-card">
+            <h3>Welcome to Campus Delivery Admin!</h3>
+            <p>Get started by creating your first vendor account:</p>
+            <a href="/admin/vendors/new" class="btn-primary">Create First Vendor</a>
+        </div>
+    </div>
+    {{/if}}
+</div>
+
+<style>
+    .stat-detail {
+        font-size: 11px;
+        color: #888;
+        margin-top: 2px;
+        display: block;
+    }
+
+    .no-activity {
+        text-align: center;
+        padding: 40px 20px;
+        color: #666;
+    }
+
+    .activity-amount {
+        font-weight: 600;
+        color: #38a169;
+        font-size: 14px;
+    }
+
+    .welcome-message {
+        margin-top: 30px;
+    }
+
+    .welcome-card {
+        background: linear-gradient(135deg, #6C5CE7, #00D2D3);
+        color: white;
+        padding: 30px;
+        border-radius: 16px;
+        text-align: center;
+    }
+
+    .welcome-card h3 {
+        margin: 0 0 10px 0;
+        font-size: 24px;
+    }
+
+    .welcome-card p {
+        margin: 0 0 20px 0;
+        opacity: 0.9;
+    }
+
+    .welcome-card .btn-primary {
+        background: white;
+        color: #6C5CE7;
+        padding: 12px 24px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        display: inline-block;
+    }
+
+    .welcome-card .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    }
+</style>
