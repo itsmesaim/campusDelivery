@@ -9,6 +9,7 @@ lerna-debug.log*
 
 .env
 .seed
+package-lock.json
 
 node_modules
 dist
